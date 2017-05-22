@@ -6,12 +6,17 @@
 
 <ion-content padding>
   <ion-list>
-      <button ion-item *ngFor="let feed of feeds" (click)="itemSelected(feed.data.url)">
-        <ion-thumbnail item-left>
-          <img [src]="feed.data.thumbnail">
-       </ion-thumbnail>
-       <h2>{{feed.data.title}}</h2>
-       <p>{{feed.data.domain}}</p>
-      </button>
-    </ion-list>
+    <button ion-item *ngFor="let feed of feeds" (click)="itemSelected(feed.data.url)">
+      <ion-thumbnail item-left>
+        <img [src]="feed.data.thumbnail">
+      </ion-thumbnail>
+      <h2>{{feed.data.title}}</h2>
+      <p>{{feed.data.domain}}</p>
+    </button>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+       loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+ </ion-infinite-scroll> 
 </ion-content>

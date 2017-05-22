@@ -11,10 +11,29 @@ import 'rxjs/add/operator/map';
 export class HomePage {
 
   public feeds: Array<string>;
-  private url: string = "https://www.reddit.com/new.json";  
+  private url: string = "https://www.reddit.com/new.json";
+  private olderPosts: string = "https://www.reddit.com/new.json?after=";
 
   constructor(public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, private iab: InAppBrowser) {
     this.fetchContent();
+  }
+
+  doInfinite(infiniteScroll) {
+    let self: any = this;
+    let paramsUrl = (this.feeds.length > 0) ? self.feeds[this.feeds.length - 1].data.name : "";
+
+    this.http.get(this.olderPosts + paramsUrl).map(res => res.json())
+      .subscribe(data => {
+      
+        this.feeds = this.feeds.concat(data.data.children);
+        
+        self.feeds.forEach((e, i, a) => {
+          if (!e.data.thumbnail || e.data.thumbnail.indexOf('b.thumbs.redditmedia.com') === -1 ) {  
+            e.data.thumbnail = 'http://www.redditstatic.com/icon.png';
+          }
+        })
+        infiniteScroll.complete();
+      });
   }
 
   fetchContent ():void {
