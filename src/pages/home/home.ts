@@ -13,9 +13,29 @@ export class HomePage {
   public feeds: Array<string>;
   private url: string = "https://www.reddit.com/new.json";
   private olderPosts: string = "https://www.reddit.com/new.json?after=";
+  private newerPosts: string = "https://www.reddit.com/new.json?before=";
 
   constructor(public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, private iab: InAppBrowser) {
     this.fetchContent();
+  }
+
+  doRefresh(refresher) {
+
+    let self: any = this;
+    let paramsUrl = self.feeds[0].data.name;
+
+    this.http.get(this.newerPosts + paramsUrl).map(res => res.json())
+      .subscribe(data => {
+      
+        this.feeds = data.data.children.concat(this.feeds);
+        
+        self.feeds.forEach((e, i, a) => {
+          if (!e.data.thumbnail || e.data.thumbnail.indexOf('b.thumbs.redditmedia.com') === -1 ) {  
+            e.data.thumbnail = 'http://www.redditstatic.com/icon.png';
+          }
+        })
+        refresher.complete();
+      });
   }
 
   doInfinite(infiniteScroll) {
