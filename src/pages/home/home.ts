@@ -1,9 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, LoadingController, ActionSheetController, Content } from 'ionic-angular';
-import { Http } from '@angular/http';
+import { FormControl } from '@angular/forms';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { RedditServiceProvider } from '../../providers/reddit-service/reddit-service';
 import 'rxjs/add/operator/map';
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/distinctUntilChanged";
 
 @Component({
   selector: 'page-home',
@@ -14,15 +16,26 @@ export class HomePage {
   public noFilter: Array<any>;
   public hasFilter: boolean = false;
   public feeds: Array<string>;
+  
   private url: string = "https://www.reddit.com/new.json";
   private olderPosts: string = "https://www.reddit.com/new.json?after=";
   private newerPosts: string = "https://www.reddit.com/new.json?before=";
-  private searchTerm: string;
+
+  private searchTerm: string = '';
+  private searchTermControl: FormControl;
   @ViewChild(Content) public content: Content;
 
-  constructor(public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, private iab: InAppBrowser, public actionSheetCtrl: ActionSheetController, public redditService: RedditServiceProvider) {
+  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, private iab: InAppBrowser, public actionSheetCtrl: ActionSheetController, public redditService: RedditServiceProvider) {
     this.fetchContent();
+
+    this.searchTermControl = new FormControl();
+    this.searchTermControl.valueChanges.debounceTime(1000).distinctUntilChanged().subscribe(search => {
+      if (search !== '' && search) {
+        this.filterItems();
+      }
+    });
   }
+
 
   filterItems() {
     this.hasFilter = false;
