@@ -22,6 +22,15 @@ export class HomePage {
     this.fetchContent();
   }
 
+  private searchTerm: string;
+
+  filterItems() {
+    this.hasFilter = false;
+    this.feeds = this.noFilter.filter((item) => {
+      return item.data.title.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
+    });
+  }
+
   showFilters() :void {
 
     let actionSheet = this.actionSheetCtrl.create({
