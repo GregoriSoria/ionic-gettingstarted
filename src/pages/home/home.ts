@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, LoadingController, ActionSheetController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, LoadingController, ActionSheetController, Content } from 'ionic-angular';
 import { Http } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { RedditServiceProvider } from '../../providers/reddit-service/reddit-service';
@@ -17,12 +17,12 @@ export class HomePage {
   private url: string = "https://www.reddit.com/new.json";
   private olderPosts: string = "https://www.reddit.com/new.json?after=";
   private newerPosts: string = "https://www.reddit.com/new.json?before=";
+  private searchTerm: string;
+  @ViewChild(Content) public content: Content;
 
   constructor(public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, private iab: InAppBrowser, public actionSheetCtrl: ActionSheetController, public redditService: RedditServiceProvider) {
     this.fetchContent();
   }
-
-  private searchTerm: string;
 
   filterItems() {
     this.hasFilter = false;
@@ -32,6 +32,7 @@ export class HomePage {
   }
 
   showFilters() :void {
+    this.content.scrollToTop();
 
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Filter options:',
