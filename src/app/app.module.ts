@@ -12,6 +12,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpModule } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { RedditServiceProvider } from '../providers/reddit-service/reddit-service';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     StatusBar,
     SplashScreen,
     InAppBrowser,
+    RedditServiceProvider,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
